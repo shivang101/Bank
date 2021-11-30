@@ -35,6 +35,15 @@ const account4 = {
 
 const accounts = [account1, account2, account3, account4];
 
+accounts.forEach(function (acc) {
+  acc.username = acc.owner
+    .toLowerCase()
+    .split(' ')
+    .map(el => el[0])
+    .join('');
+});
+console.log(accounts);
+
 // Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
