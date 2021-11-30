@@ -35,13 +35,16 @@ const account4 = {
 
 const accounts = [account1, account2, account3, account4];
 
-accounts.forEach(function (acc) {
-  acc.username = acc.owner
-    .toLowerCase()
-    .split(' ')
-    .map(el => el[0])
-    .join('');
-});
+const createUsernames = function (accs) {
+  accounts.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(el => el[0])
+      .join('');
+  });
+};
+createUsernames(accounts);
 console.log(accounts);
 
 // Elements
