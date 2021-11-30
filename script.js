@@ -101,18 +101,17 @@ const displayMovements = function (movements) {
 };
 displayMovements(movements);
 
-let currentAccount;
-
 //Update UI
-
-const displayBalance = function (movements) {
-  labelBalance.textContent = movements.reduce((acc, mov) => acc + mov, 0);
+const UpdateUI = function (ACCOUNTS) {
+  calcDisplaySummary(ACCOUNTS.movements);
 };
-displayBalance(movements);
-
-console.log(movements);
 
 const calcDisplaySummary = function (movements) {
+  const displayBalance = function (movements) {
+    labelBalance.textContent = movements.reduce((acc, mov) => acc + mov, 0);
+  };
+  displayBalance(movements);
+
   const deposit = function (movements) {
     labelSumIn.textContent = movements
       .filter(mov => mov >= 0)
@@ -139,3 +138,26 @@ const calcDisplaySummary = function (movements) {
   interest(movements);
 };
 calcDisplaySummary(movements);
+
+//LOGIN
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    UpdateUI(currentAccount);
+  }
+  containerApp.style.opacity = 100;
+  //clear input fields
+  inputLoginUsername.value = inputLoginPin.value = '';
+  inputLoginPin.blur();
+});
