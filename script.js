@@ -100,3 +100,5 @@ const displayMovements = function (movements) {
   });
 };
 displayMovements(movements);
+
+let currentAccount;
