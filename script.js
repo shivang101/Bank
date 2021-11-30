@@ -102,3 +102,40 @@ const displayMovements = function (movements) {
 displayMovements(movements);
 
 let currentAccount;
+
+//Update UI
+
+const displayBalance = function (movements) {
+  labelBalance.textContent = movements.reduce((acc, mov) => acc + mov, 0);
+};
+displayBalance(movements);
+
+console.log(movements);
+
+const calcDisplaySummary = function (movements) {
+  const deposit = function (movements) {
+    labelSumIn.textContent = movements
+      .filter(mov => mov >= 0)
+      .reduce((acc, mov) => acc + mov, 0);
+  };
+  deposit(movements);
+  const out = function (movements) {
+    labelSumOut.textContent = Math.abs(
+      movements.filter(mov => mov <= 0).reduce((acc, mov) => acc + mov, 0)
+    );
+  };
+  out(movements);
+
+  const interest = function (movements) {
+    labelSumInterest.textContent = movements
+      .filter(mov => mov >= 0)
+      .reduce((acum, val) => {
+        if ((val * 1.2) / 100 >= 1) {
+          return acum + val * 1.2;
+        }
+        return acum, 0;
+      });
+  };
+  interest(movements);
+};
+calcDisplaySummary(movements);
