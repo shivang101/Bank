@@ -45,7 +45,6 @@ const createUsernames = function (accs) {
   });
 };
 createUsernames(accounts);
-console.log(accounts);
 
 // Elements
 const labelWelcome = document.querySelector('.welcome');
@@ -102,10 +101,9 @@ const displayMovements = function (movements, sort) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMovements(movements);
 
-let Sorted = false;
 //SORT
+let Sorted = false;
 btnSort.addEventListener('click', function (e) {
   e.preventDefault();
 
@@ -114,45 +112,50 @@ btnSort.addEventListener('click', function (e) {
 });
 
 //Update UI
-const UpdateUI = function (ACCOUNTS) {
-  calcDisplaySummary(ACCOUNTS.movements);
+const UpdateUI = function (account) {
+  displayMovements(account.movements);
+
+  displayBalance(account);
+
+  calcDisplaySummary(account);
 };
 
-const calcDisplaySummary = function (movements) {
-  const displayBalance = function (movements) {
-    labelBalance.textContent = `${movements.reduce(
-      (acc, mov) => acc + mov,
-      0
+const displayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance}€`;
+};
+console.log(accounts);
+
+const calcDisplaySummary = function (acc) {
+  const deposit = function (movements) {
+    labelSumIn.textContent = `${movements
+      .filter(mov => mov >= 0)
+      .reduce((acc, mov) => acc + mov, 0)}€`;
+  };
+  deposit(acc.movements);
+
+  const out = function (movements) {
+    labelSumOut.textContent = `${Math.abs(
+      movements.filter(mov => mov <= 0).reduce((acc, mov) => acc + mov, 0)
     )}€`;
   };
-  displayBalance(movements);
-
-  const deposit = function (movements) {
-    labelSumIn.textContent = movements
-      .filter(mov => mov >= 0)
-      .reduce((acc, mov) => acc + mov, 0);
-  };
-  deposit(movements);
-  const out = function (movements) {
-    labelSumOut.textContent = Math.abs(
-      movements.filter(mov => mov <= 0).reduce((acc, mov) => acc + mov, 0)
-    );
-  };
-  out(movements);
+  out(acc.movements);
+  console.log(acc.interestRate);
 
   const interest = function (movements) {
-    labelSumInterest.textContent = movements
+    labelSumInterest.textContent = `${movements
       .filter(mov => mov >= 0)
       .reduce((acum, val) => {
-        if ((val * 1.2) / 100 >= 1) {
-          return acum + val * 1.2;
+        if ((val * acc.interestRate) / 100 >= 1) {
+          return acum + val * acc.interestRate;
         }
         return acum, 0;
-      });
+      })}€`;
   };
-  interest(movements);
+  interest(acc.movements);
 };
 
+//BUTTONS
 //LOGIN
 let currentAccount;
 
@@ -174,4 +177,23 @@ btnLogin.addEventListener('click', function (e) {
   //clear input fields
   inputLoginUsername.value = inputLoginPin.value = '';
   inputLoginPin.blur();
+});
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  inputTransferAmount.value = inputTransferTo.value = '';
+  inputTransferAmount.blur();
+  console.log(amount, receiverAcc, currentAccount);
+
+  if (amount > 0 && amount <= currentAccount.balance) {
+    console.log('i');
+
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+    UpdateUI(currentAccount);
+  }
 });
