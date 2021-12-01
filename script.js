@@ -137,7 +137,6 @@ const calcDisplaySummary = function (movements) {
   };
   interest(movements);
 };
-calcDisplaySummary(movements);
 
 //LOGIN
 let currentAccount;
