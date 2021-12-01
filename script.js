@@ -86,9 +86,12 @@ const currencies = new Map([
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort) {
   containerMovements.textContent = '';
-  movements.forEach(function (val, i, arr) {
+
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (val, i, arr) {
     const type = val >= 0 ? 'deposit' : 'withdrawal';
 
     const html = `<div class="movements__row">
@@ -101,6 +104,15 @@ const displayMovements = function (movements) {
 };
 displayMovements(movements);
 
+let Sorted = false;
+//SORT
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  displayMovements(currentAccount.movements, !Sorted);
+  Sorted = !Sorted;
+});
+
 //Update UI
 const UpdateUI = function (ACCOUNTS) {
   calcDisplaySummary(ACCOUNTS.movements);
@@ -108,7 +120,10 @@ const UpdateUI = function (ACCOUNTS) {
 
 const calcDisplaySummary = function (movements) {
   const displayBalance = function (movements) {
-    labelBalance.textContent = movements.reduce((acc, mov) => acc + mov, 0);
+    labelBalance.textContent = `${movements.reduce(
+      (acc, mov) => acc + mov,
+      0
+    )}€`;
   };
   displayBalance(movements);
 
